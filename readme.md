@@ -1,6 +1,6 @@
 # Fetenquest
 
-Dungeon crawler por turnos, grid-based, con permadeath por mercenario. Una reimaginación roguelike de HeroQuest con profundidad moderna, mi intencion es un mix del core de fire emblem con el loop de darkest dungeon.
+Dungeon crawler por turnos, grid-based, con permadeath por mercenario. Una reimaginación roguelike de HeroQuest con profundidad moderna — un mix del core de Fire Emblem con el loop de Darkest Dungeon.
 
 ## Concepto
 
@@ -76,42 +76,64 @@ Ciudad Hub
                                 └── Derrota → perdida escalonada de oro
 ```
 
-## Sistemas implementados (Fase 1)
+## Sistemas implementados
 
-- `GameState` — singleton global, oro permanente, oro de run, contador de caos
-- `DiceSystem` — dados de combate custom (calavera/escudo blanco/escudo negro), 2d6 de movimiento, probabilidades por combinatoria exacta
-- `Entity` — clase base de mercenarios y monstruos
-- `MercenaryInstance` — stats por clase, pool de movimiento dividido, permadeath
-- `MonsterInstance` — comportamiento Territorial/Agresivo, conversion automatica
-- `TurnManager` — cola de turnos mercenarios → monstruos
-- `ChaosSystem` — contador con 5 umbrales de escalada
-- `GridManager` — grid 2D, pathfinding A*, linea de vision Bresenham, zona de control de monstruos
-- `FogOfWarSystem` — revelacion celda a celda en pasillos, revelacion total de habitacion al abrir puerta
-- `CombatSystem` — resolucion de ataque/defensa, preview de probabilidades antes de confirmar
+### Fase 1 — Arquitectura base (completa)
+
+| Sistema | Descripcion |
+|---------|-------------|
+| `GameState` | Singleton global. Oro permanente, oro de run, slots de mercenario, estado de run activa |
+| `DiceSystem` | Dados de combate custom (calavera / escudo blanco / escudo negro), 2d6 de movimiento, probabilidades por combinatoria exacta |
+| `Entity` | Clase base abstracta de mercenarios y monstruos. Stats, posicion en grid, recibir daño, curar |
+| `MercenaryInstance` | Stats por clase, pool de movimiento dividido, permadeath con perdida de equipo |
+| `MonsterInstance` | Comportamiento Territorial/Agresivo, conversion automatica a Agresivo por Mente <= 1 o trait |
+| `TurnManager` | Cola de turnos mercenarios → monstruos, señales de inicio y fin de ronda |
+| `ChaosSystem` | Contador de Caos con 5 umbrales: monstruo errante (10), buff monstruos (20), trampas (30), jefe activo (40), spawn continuo (50+) |
+| `GridManager` | Grid 2D con TileType, pathfinding A*, linea de vision Bresenham, zona de control de monstruos |
+| `FogOfWarSystem` | Revelacion celda a celda en pasillos, revelacion total de habitacion al abrir puerta, LOS para activacion de monstruos |
+| `CombatSystem` | Resolucion de ataque/defensa con distincion heroe/monstruo en escudos, preview de probabilidades antes de confirmar |
+| `EscapeSystem` | Deteccion de jefe derrotado, fase de escape, perdida escalonada de oro segun profundidad alcanzada |
+| `TreasureSystem` | Mazo de 20 cartas por bioma barajado al inicio, robo de carta con efectos inmediatos, historial de busquedas por sala |
+| `RoomTemplate` | Plantilla de sala con layout, spawn points, tipo, bioma y conexiones posibles |
+| `DungeonRoom` | Sala instanciada en la run con conexiones, monstruos activos y estado de revelacion |
+| `DungeonGenerator` | Generacion procedural estilo Binding of Isaac: pool de plantillas, cadena principal, camino valido garantizado, poblacion de monstruos por bioma |
 
 ## Estructura del proyecto
 
 ```
 res://
 ├── src/
-│   ├── core/        # Sistemas principales
+│   ├── core/        # GameState, DiceSystem, TurnManager, ChaosSystem,
+│   │                # FogOfWarSystem, CombatSystem, EscapeSystem, TreasureSystem
 │   ├── entities/    # Entity, MercenaryInstance, MonsterInstance
-│   ├── grid/        # GridManager, MovementPool
-│   ├── dungeon/     # DungeonGenerator, RoomTemplate
-│   └── data/        # Resources: clases, items
+│   ├── grid/        # GridManager
+│   ├── dungeon/     # RoomTemplate, DungeonRoom, DungeonGenerator
+│   └── data/        # Resources: clases, items (pendiente)
 ├── scenes/          # Escenas .tscn
 ├── assets/          # Sprites placeholder
 └── resources/       # Archivos .tres
 ```
 
-## Biomas (pendiente)
+## Biomas
 
 | Bioma | Dificultad | Enemigos |
 |-------|-----------|----------|
-| Las Alcantarillas | Introductorio | Goblins, ratas, trampas simples |
-| El Castillo Abandonado | Medio | Muertos vivientes, trampas mecanicas |
-| Las Cuevas del Brujo | Dificil | Cultistas, criaturas magicas, jefe |
+| Las Alcantarillas | Introductorio | Goblins, zombies, ratas gigantes |
+| El Castillo Abandonado | Medio | Esqueletos, caballeros muertos |
+| Las Cuevas del Brujo | Dificil | Cultistas, brujo (jefe final) |
 
 ## Estado actual
 
-Fase 1 completa: arquitectura base y sistemas core funcionando con escena de prueba en consola. Proximos pasos: `EscapeSystem`, `TreasureSystem` y `DungeonGenerator`.
+### Completado
+- Fase 1 completa: todos los sistemas core implementados y testeados en escena de prueba de consola
+- Generacion procedural de mazmorras funcionando con poblacion de monstruos por bioma
+- Sistema de dados con probabilidades exactas por combinatoria
+- Permadeath, perdida escalonada de oro y fase de escape funcionando
+
+### Pendiente (Fase 2)
+- Escena visual con TileMap y sprites placeholder
+- Input del jugador (click para mover, click para atacar)
+- UI: barra de vida, contador de caos, panel de turno
+- Integracion de todos los sistemas en la escena de juego real
+- 66 plantillas de sala manuales (22 por bioma)
+- Ciudad Hub con reclutamiento y tienda
