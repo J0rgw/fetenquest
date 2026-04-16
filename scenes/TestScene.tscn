@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://da20t6fqtapon" path="res://src/core/ChaosSystem.cs" id="3_nb1wl"]
 [ext_resource type="Script" uid="uid://bct6vfebvegmq" path="res://src/core/FogOfWarSystem.cs" id="4_fws1a"]
 [ext_resource type="Script" uid="uid://cbfqfws1svlj8" path="res://src/core/CombatSystem.cs" id="5_xpysu"]
+[ext_resource type="Script" uid="uid://crhrnqu8etko5" path="res://src/core/EscapeSystem.cs" id="6_epq12"]
+[ext_resource type="Script" uid="uid://bsgs16ub3u8hs" path="res://src/core/TreasureSystem.cs" id="7_u6bnu"]
 
 [node name="Node" type="Node" unique_id=1287244713]
 
@@ -23,6 +25,12 @@ script = ExtResource("4_fws1a")
 
 [node name="CombatSystem" type="Node" parent="." unique_id=1425998784]
 script = ExtResource("5_xpysu")
+
+[node name="EscapeSystem" type="Node" parent="." unique_id=2097501577]
+script = ExtResource("6_epq12")
+
+[node name="TreasureSystem" type="Node" parent="." unique_id=37461020]
+script = ExtResource("7_u6bnu")
 
 [node name="TestRunner" type="Node" parent="." unique_id=2077155641]
 script = ExtResource("1_2gju5")

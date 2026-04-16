@@ -33,7 +33,7 @@ public partial class ChaosSystem : Node
             GD.Print("⚠ CC≥50: Monstruo errante cada turno. La run es casi injugable.");
     }
 
-    private void SpawnWanderingMonster()
+    public void SpawnWanderingMonster()
     {
         // Por ahora solo log — la lógica real va cuando tengamos el grid
         GD.Print("Monstruo errante spawneado en sala revelada aleatoria.");

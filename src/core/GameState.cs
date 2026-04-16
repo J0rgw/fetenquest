@@ -38,6 +38,11 @@ public partial class GameState : Node
 		GD.Print($"Oro de run: {RunGold}");
 	}
 
+	public void AddPermanentGold(int amount)
+	{
+		PermanentGold += amount;
+		GD.Print($"Oro permanente: {PermanentGold}");
+	}
 	public void IncrementChaos()
 	{
 		ChaosCounter++;
