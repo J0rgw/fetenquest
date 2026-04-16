@@ -1,6 +1,6 @@
 # Fetenquest
 
-Dungeon crawler por turnos, grid-based, con permadeath por mercenario. Una reimaginación roguelike de HeroQuest con profundidad moderna.
+Dungeon crawler por turnos, grid-based, con permadeath por mercenario. Una reimaginación roguelike de HeroQuest con profundidad moderna, mi intencion es un mix del core de fire emblem con el loop de darkest dungeon
 
 ## Concepto
 
@@ -14,7 +14,7 @@ Fetenquest toma la esencia del HeroQuest clásico de tablero y la lleva a un loo
 
 - **Motor:** Godot 4.6.2 Mono
 - **Lenguaje:** C# (.NET 8)
-- **Plataforma objetivo:** Steam
+- **Plataforma objetivo:** Steam/PC
 
 ## Clases
 
