@@ -110,23 +110,28 @@ public partial class TestRunner : Node
 		CombatSystem.Instance.ExecuteAttack(barbarian, zombie);
 
 		// Test EscapeSystem
-GD.Print("\n--- Test de EscapeSystem ---");
-GameState.Instance.AddRunGold(100);
-EscapeSystem.Instance.UpdateDepth(3);
-EscapeSystem.Instance.OnRunFailed();
+		GD.Print("\n--- Test de EscapeSystem ---");
+		GameState.Instance.AddRunGold(100);
+		EscapeSystem.Instance.UpdateDepth(3);
+		EscapeSystem.Instance.OnRunFailed();
 
-GD.Print("\n--- Simulando escape exitoso ---");
-GameState.Instance.StartRun();
-GameState.Instance.AddRunGold(200);
-EscapeSystem.Instance.OnBossDefeated();
-EscapeSystem.Instance.OnEscapeSuccessful();
+		GD.Print("\n--- Simulando escape exitoso ---");
+		GameState.Instance.StartRun();
+		GameState.Instance.AddRunGold(200);
+		EscapeSystem.Instance.OnBossDefeated();
+		EscapeSystem.Instance.OnEscapeSuccessful();
 
-// Test TreasureSystem
-GD.Print("\n--- Test de TreasureSystem ---");
-TreasureSystem.Instance.InitializeDeck();
-var roomPos = new Vector2I(3, 3);
-for (int i = 0; i < 5; i++)
-    TreasureSystem.Instance.DrawCard(roomPos);
+		// Test TreasureSystem
+		GD.Print("\n--- Test de TreasureSystem ---");
+		TreasureSystem.Instance.InitializeDeck();
+		var roomPos = new Vector2I(3, 3);
+		for (int i = 0; i < 5; i++)
+			TreasureSystem.Instance.DrawCard(roomPos);
+
+
+		// Test DungeonGenerator
+		GD.Print("\n--- Test de DungeonGenerator ---");
+		DungeonGenerator.Instance.GenerateDungeon(Biome.Sewers, targetRooms: 8);
 	}
 
 
