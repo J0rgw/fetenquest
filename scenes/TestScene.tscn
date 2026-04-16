@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://2g0xunf57c3p"]
+
+[ext_resource type="Script" uid="uid://cnv37p64dtpuj" path="res://src/core/TestRunner.cs" id="1_2gju5"]
+[ext_resource type="Script" uid="uid://j80xwighwgh7" path="res://src/core/TurnManager.cs" id="2_n77mx"]
+[ext_resource type="Script" uid="uid://b8es5ilf8gcx5" path="res://src/grid/GridManager.cs" id="3_m5dm6"]
+[ext_resource type="Script" uid="uid://da20t6fqtapon" path="res://src/core/ChaosSystem.cs" id="3_nb1wl"]
+[ext_resource type="Script" uid="uid://bct6vfebvegmq" path="res://src/core/FogOfWarSystem.cs" id="4_fws1a"]
+[ext_resource type="Script" uid="uid://cbfqfws1svlj8" path="res://src/core/CombatSystem.cs" id="5_xpysu"]
+
+[node name="Node" type="Node" unique_id=1287244713]
+
+[node name="TurnManager" type="Node" parent="." unique_id=1902836103]
+script = ExtResource("2_n77mx")
+
+[node name="ChaosSystem" type="Node" parent="." unique_id=1227145841]
+script = ExtResource("3_nb1wl")
+
+[node name="GridManager" type="Node" parent="." unique_id=1599559068]
+script = ExtResource("3_m5dm6")
+
+[node name="FogOfWarSystem" type="Node" parent="." unique_id=675579762]
+script = ExtResource("4_fws1a")
+
+[node name="CombatSystem" type="Node" parent="." unique_id=1425998784]
+script = ExtResource("5_xpysu")
+
+[node name="TestRunner" type="Node" parent="." unique_id=2077155641]
+script = ExtResource("1_2gju5")
