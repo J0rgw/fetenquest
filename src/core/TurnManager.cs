@@ -13,6 +13,13 @@ public partial class TurnManager : Node
 
     [Signal] public delegate void TurnStartedEventHandler(string entityName);
     [Signal] public delegate void AllTurnsEndedEventHandler();
+    [Signal] public delegate void MonsterPhaseStartedEventHandler();
+    [Signal] public delegate void MercenaryPhaseStartedEventHandler();
+    [Signal] public delegate void MercenaryMovementUpdatedEventHandler();
+
+    public IReadOnlyList<MercenaryInstance> Mercenaries => _mercenaries;
+    public IReadOnlyList<MonsterInstance> Monsters => _monsters;
+    public bool IsMercenaryPhase => _isMercenaryPhase;
 
     public override void _Ready()
     {
@@ -21,6 +28,13 @@ public partial class TurnManager : Node
 
     public void RegisterMercenary(MercenaryInstance m) => _mercenaries.Add(m);
     public void RegisterMonster(MonsterInstance m) => _monsters.Add(m);
+
+    public MercenaryInstance GetCurrentMercenary()
+    {
+        if (!_isMercenaryPhase) return null;
+        if (_currentMercenaryIndex < 0 || _currentMercenaryIndex >= _mercenaries.Count) return null;
+        return _mercenaries[_currentMercenaryIndex];
+    }
 
     public void StartCombat()
     {
@@ -34,7 +48,6 @@ public partial class TurnManager : Node
     {
         if (_isMercenaryPhase)
         {
-            // Buscamos el siguiente mercenario vivo
             while (_currentMercenaryIndex < _mercenaries.Count &&
                    _mercenaries[_currentMercenaryIndex].IsDead)
             {
@@ -43,7 +56,6 @@ public partial class TurnManager : Node
 
             if (_currentMercenaryIndex >= _mercenaries.Count)
             {
-                // Todos los mercenarios han actuado, turno de monstruos
                 _isMercenaryPhase = false;
                 StartMonsterPhase();
                 return;
@@ -62,19 +74,33 @@ public partial class TurnManager : Node
         StartNextTurn();
     }
 
+    public void NotifyMovementChanged()
+    {
+        EmitSignal(SignalName.MercenaryMovementUpdated);
+    }
+
     private void StartMonsterPhase()
     {
         GD.Print("--- Turno de monstruos ---");
-        foreach (var monster in _monsters)
-        {
-            if (monster.IsAlive)
-                monster.StartTurn();
-        }
+        EmitSignal(SignalName.TurnStarted, "Monstruos");
+        EmitSignal(SignalName.MonsterPhaseStarted);
+        // Si no hay subscriber (test runner), cerrar fase inmediatamente
+        if (!HasConnections(SignalName.MonsterPhaseStarted))
+            EndMonsterPhase();
+    }
 
-        // Volvemos a los mercenarios
+    private bool HasConnections(StringName signal)
+    {
+        return GetSignalConnectionList(signal).Count > 0;
+    }
+
+    public void EndMonsterPhase()
+    {
         _currentMercenaryIndex = 0;
         _isMercenaryPhase = true;
         EmitSignal(SignalName.AllTurnsEnded);
+        EmitSignal(SignalName.MercenaryPhaseStarted);
         GD.Print("--- Fin de ronda ---\n");
+        StartNextTurn();
     }
-}	
+}

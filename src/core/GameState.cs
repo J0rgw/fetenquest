@@ -18,6 +18,8 @@ public partial class GameState : Node
 
 	public bool IsRunActive { get; private set; } = false;
 
+	[Signal] public delegate void ChaosChangedEventHandler(int newValue);
+
 	public override void _Ready()
 	{
 		Instance = this;
@@ -47,6 +49,7 @@ public partial class GameState : Node
 	{
 		ChaosCounter++;
 		GD.Print($"Contador de Caos: {ChaosCounter}");
+		EmitSignal(SignalName.ChaosChanged, ChaosCounter);
 		ChaosSystem.Instance?.CheckThresholds(ChaosCounter);
 	}
 }

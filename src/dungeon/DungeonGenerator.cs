@@ -125,7 +125,7 @@ public partial class DungeonGenerator : Node
                 var prev = mainChain[i - 1];
                 // Colocamos la sala al este del anterior por defecto
                 room.GridOffset = new Vector2I(
-                    prev.GridOffset.X + prev.Template.Width + 3,
+                    prev.GridOffset.X + prev.Template.Width + 5,
                     prev.GridOffset.Y
                 );
 
@@ -198,7 +198,10 @@ public partial class DungeonGenerator : Node
 
             for (int i = 0; i < monsterCount; i++)
             {
-                var monster = CreateMonsterForBiome(biome, room.Template.Type == RoomType.Boss);
+                bool isBoss = room.Template.Type == RoomType.Boss;
+                var monster = CreateMonsterForBiome(biome, isBoss);
+                monster.IsBoss = isBoss;
+                monster.HomeRoom = room;
                 room.Monsters.Add(monster);
             }
 

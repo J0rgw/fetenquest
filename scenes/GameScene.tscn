@@ -1,0 +1,94 @@
+[gd_scene format=3 uid="uid://bfqgamescn01"]
+
+[ext_resource type="Script" path="res://src/core/TurnManager.cs" id="1_turn"]
+[ext_resource type="Script" path="res://src/core/ChaosSystem.cs" id="2_chaos"]
+[ext_resource type="Script" path="res://src/grid/GridManager.cs" id="3_grid"]
+[ext_resource type="Script" path="res://src/core/FogOfWarSystem.cs" id="4_fog"]
+[ext_resource type="Script" path="res://src/core/CombatSystem.cs" id="5_combat"]
+[ext_resource type="Script" path="res://src/core/EscapeSystem.cs" id="6_escape"]
+[ext_resource type="Script" path="res://src/core/TreasureSystem.cs" id="7_treasure"]
+[ext_resource type="Script" path="res://src/dungeon/DungeonGenerator.cs" id="8_gen"]
+[ext_resource type="Script" path="res://src/dungeon/DungeonRenderer.cs" id="9_dren"]
+[ext_resource type="Script" path="res://src/core/FogOfWarRenderer.cs" id="10_fren"]
+[ext_resource type="Script" path="res://src/entities/EntityManager.cs" id="11_emgr"]
+[ext_resource type="Script" path="res://src/entities/MonsterAI.cs" id="12_mai"]
+[ext_resource type="Script" path="res://src/core/InputHandler.cs" id="13_input"]
+[ext_resource type="Script" path="res://src/core/CameraController.cs" id="14_cam"]
+[ext_resource type="Script" path="res://src/core/GameSceneController.cs" id="15_ctrl"]
+[ext_resource type="PackedScene" path="res://scenes/UI/GameUI.tscn" id="16_ui"]
+
+[node name="GameScene" type="Node"]
+
+[node name="Systems" type="Node" parent="."]
+
+[node name="TurnManager" type="Node" parent="Systems"]
+script = ExtResource("1_turn")
+
+[node name="ChaosSystem" type="Node" parent="Systems"]
+script = ExtResource("2_chaos")
+
+[node name="GridManager" type="Node" parent="Systems"]
+script = ExtResource("3_grid")
+
+[node name="FogOfWarSystem" type="Node" parent="Systems"]
+script = ExtResource("4_fog")
+
+[node name="CombatSystem" type="Node" parent="Systems"]
+script = ExtResource("5_combat")
+
+[node name="EscapeSystem" type="Node" parent="Systems"]
+script = ExtResource("6_escape")
+
+[node name="TreasureSystem" type="Node" parent="Systems"]
+script = ExtResource("7_treasure")
+
+[node name="DungeonGenerator" type="Node" parent="Systems"]
+script = ExtResource("8_gen")
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="DungeonRenderer" type="Node2D" parent="World"]
+script = ExtResource("9_dren")
+DungeonMap = NodePath("DungeonMap")
+
+[node name="DungeonMap" type="TileMapLayer" parent="World/DungeonRenderer"]
+
+[node name="OverlayContainer" type="Node2D" parent="World"]
+
+[node name="Entities" type="Node2D" parent="World"]
+
+[node name="FogRenderer" type="Node2D" parent="World"]
+script = ExtResource("10_fren")
+FogLayer = NodePath("FogLayer")
+
+[node name="FogLayer" type="TileMapLayer" parent="World/FogRenderer"]
+z_index = 10
+
+[node name="Camera2D" type="Camera2D" parent="World"]
+zoom = Vector2(2, 2)
+script = ExtResource("14_cam")
+
+[node name="EntityManager" type="Node" parent="."]
+script = ExtResource("11_emgr")
+EntitiesContainer = NodePath("../World/Entities")
+
+[node name="MonsterAI" type="Node" parent="."]
+script = ExtResource("12_mai")
+
+[node name="InputHandler" type="Node" parent="."]
+script = ExtResource("13_input")
+OverlayContainer = NodePath("../World/OverlayContainer")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="GameUI" parent="UI" instance=ExtResource("16_ui")]
+
+[node name="GameSceneController" type="Node" parent="."]
+script = ExtResource("15_ctrl")
+DungeonRendererPath = NodePath("../World/DungeonRenderer")
+FogRendererPath = NodePath("../World/FogRenderer")
+EntityManagerPath = NodePath("../EntityManager")
+InputHandlerPath = NodePath("../InputHandler")
+MonsterAIPath = NodePath("../MonsterAI")
+CameraPath = NodePath("../World/Camera2D")
+UIPath = NodePath("../UI/GameUI")

@@ -9,6 +9,9 @@ public partial class FogOfWarSystem : Node
 
     private Dictionary<Vector2I, CellVisibility> _visibility = new();
 
+    [Signal] public delegate void CellRevealedEventHandler(Vector2I pos);
+    [Signal] public delegate void RoomRevealedEventHandler();
+
     public override void _Ready()
     {
         Instance = this;
@@ -34,17 +37,15 @@ public partial class FogOfWarSystem : Node
         return GetVisibility(pos) != CellVisibility.Hidden;
     }
 
-    // Revela una celda de pasillo al moverse por él
     public void RevealCorridorCell(Vector2I pos)
     {
         if (_visibility.ContainsKey(pos) && _visibility[pos] == CellVisibility.Hidden)
         {
             _visibility[pos] = CellVisibility.CorridorRevealed;
-            GD.Print($"Pasillo revelado en ({pos.X}, {pos.Y})");
+            EmitSignal(SignalName.CellRevealed, pos);
         }
     }
 
-    // Revela toda una habitación de golpe al abrir la puerta
     public void RevealRoom(List<Vector2I> roomCells)
     {
         int revealed = 0;
@@ -53,13 +54,15 @@ public partial class FogOfWarSystem : Node
             if (_visibility.ContainsKey(cell) && _visibility[cell] == CellVisibility.Hidden)
             {
                 _visibility[cell] = CellVisibility.RoomRevealed;
+                EmitSignal(SignalName.CellRevealed, cell);
                 revealed++;
             }
         }
-        GD.Print($"¡Habitación revelada! {revealed} celdas descubiertas.");
+        if (revealed > 0)
+            EmitSignal(SignalName.RoomRevealed);
+        GD.Print($"Habitacion revelada: {revealed} celdas.");
     }
 
-    // Comprueba si un monstruo agresivo puede activarse por LOS a través de puerta abierta
     public bool CanMonsterActivateThroughDoor(MonsterInstance monster, List<MercenaryInstance> mercenaries)
     {
         foreach (var merc in mercenaries)
@@ -67,7 +70,7 @@ public partial class FogOfWarSystem : Node
             if (!merc.IsAlive) continue;
             if (GridManager.Instance.HasLineOfSight(monster.GridPosition, merc.GridPosition))
             {
-                GD.Print($"{monster.EntityName} tiene LOS sobre {merc.EntityName} — se activa.");
+                GD.Print($"{monster.EntityName} tiene LOS sobre {merc.EntityName}.");
                 return true;
             }
         }

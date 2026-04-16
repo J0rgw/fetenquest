@@ -7,9 +7,11 @@ public partial class MonsterInstance : Entity
     public MonsterBehavior Behavior { get; private set; }
     public bool HasAggressiveTrait { get; private set; }
     public Vector2I HomePosition { get; private set; }
+    public bool IsBoss { get; set; } = false;
 
-    // Se vuelve agresivo permanentemente si:
-    // Mente <= 1, tiene trait Aggressive, o tiene LOS a un héroe
+    // Referencia a la sala de origen (para comportamiento territorial)
+    public DungeonRoom HomeRoom { get; set; }
+
     public bool IsPermAgressive { get; private set; } = false;
 
     public void Initialize(string name, int body, int mind,
@@ -23,7 +25,6 @@ public partial class MonsterInstance : Entity
         Behavior = behavior;
         HasAggressiveTrait = hasAggressiveTrait;
 
-        // Conversión automática a agresivo
         if (mind <= 1 || hasAggressiveTrait)
             MakeAggressive();
     }
@@ -40,6 +41,12 @@ public partial class MonsterInstance : Entity
         IsPermAgressive = true;
         Behavior = MonsterBehavior.Aggressive;
         GD.Print($"{EntityName} se vuelve Agresivo permanentemente.");
+    }
+
+    public void BuffAttack(int amount)
+    {
+        AttackDice += amount;
+        GD.Print($"{EntityName} ahora tiene {AttackDice} dados de ataque.");
     }
 
     public override void StartTurn()
