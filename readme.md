@@ -1,6 +1,6 @@
 # Fetenquest
 
-Dungeon crawler por turnos, grid-based, con permadeath por mercenario. Una reimaginación roguelike de HeroQuest con profundidad moderna, mi intencion es un mix del core de fire emblem con el loop de darkest dungeon
+Dungeon crawler por turnos, grid-based, con permadeath por mercenario. Una reimaginación roguelike de HeroQuest con profundidad moderna, mi intencion es un mix del core de fire emblem con el loop de darkest dungeon.
 
 ## Concepto
 
@@ -9,6 +9,44 @@ Fetenquest toma la esencia del HeroQuest clásico de tablero y la lleva a un loo
 - **Contador de Caos** — cada turno que pasa el brujo refuerza la mazmorra. No puedes tomarte tu tiempo.
 - **Permadeath de mercenarios** — perder un personaje es perder su equipo para siempre.
 - **El escape** — matar al jefe no termina la run. Tienes que salir vivo de la mazmorra para conservar el botín.
+
+## Primeros pasos
+
+### Requisitos
+
+- [Godot 4.6.2 Mono](https://godotengine.org/download) — la version con soporte C#, **no** la estandar
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+
+Instalacion rapida con winget (Windows):
+```
+winget install GodotEngine.GodotEngine.Mono
+winget install Microsoft.DotNet.SDK.8
+```
+
+### Clonar y compilar
+
+```
+git clone https://github.com/J0rgw/fetenquest.git
+cd fetenquest
+dotnet build
+```
+
+### Abrir el proyecto en Godot
+
+1. Abre una terminal en la carpeta del proyecto
+2. Lanza Godot desde la terminal (importante para que detecte el SDK de .NET):
+```
+Godot_v4.6.2-stable_mono_win64.exe
+```
+3. Se abre el **Project Manager**. Tienes dos opciones:
+   - **Importar proyecto existente:** haz clic en "Importar", navega hasta la carpeta del proyecto y selecciona el archivo `project.godot`
+   - **Si ya aparece en la lista:** simplemente haz doble clic sobre el
+
+4. Una vez dentro del editor, pulsa **F5** para ejecutar
+
+> **Nota:** lanza siempre Godot desde la terminal estando dentro de la carpeta del proyecto. Si lo abres desde el acceso directo del escritorio o el menu inicio puede que no detecte el SDK de .NET y el build falle.
+
+---
 
 ## Stack
 
