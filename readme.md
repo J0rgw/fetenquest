@@ -10,6 +10,46 @@ Fetenquest toma la esencia del HeroQuest clásico de tablero y la lleva a un loo
 - **Permadeath de mercenarios** — perder un personaje es perder su equipo para siempre.
 - **El escape** — matar al jefe no termina la run. Tienes que salir vivo de la mazmorra para conservar el botín.
 
+## Gameplay
+
+### Vista general
+
+La mazmorra se revela mediante niebla de guerra. Los pasillos aparecen celda a celda al recorrerlos; las habitaciones se descubren de golpe al abrir su puerta. Arriba se muestra el turno activo, los puntos de movimiento restantes y el Contador de Caos.
+
+![Vista general del juego](images/primerospasos.png)
+
+*Turno del Barbarian con 2 puntos de movimiento restantes. Caos: 8. La habitación central está revelada; el resto de la mazmorra permanece en negro.*
+
+---
+
+### Contador de Caos
+
+El Contador de Caos sube cada turno y nunca se detiene. Al llegar a ciertos umbrales activa efectos globales que hacen la mazmorra más peligrosa. El número se vuelve rojo cuando alcanza un umbral crítico.
+
+![Contador de Caos en umbral 30](images/ContadorDelCaos.png)
+
+*Caos: 30 — se activan las trampas en toda la mazmorra. Los umbrales son: 10 (monstruo errante), 20 (buff a monstruos), 30 (trampas activas), 40 (jefe activo), 50+ (spawn continuo).*
+
+---
+
+### Preview de ataque
+
+Antes de confirmar un ataque el juego muestra la distribución de probabilidades exacta: cuánto daño puedes hacer y con qué porcentaje. Así puedes valorar el riesgo antes de comprometer el turno.
+
+![Preview de ataque contra Zombie](images/previewdeataque.png)
+
+*Barbarian ataca a Zombie con 3 dados. Daño esperado: 1,35. La barra muestra la probabilidad de cada resultado posible (0–3 daño) calculada por combinatoria exacta.*
+
+---
+
+### Acción de Buscar — Carta de Tesoro
+
+Al usar la acción **Buscar** en una sala el mercenario roba una carta del mazo del bioma. Las cartas pueden ser oro, equipo, eventos narrativos u otros efectos inmediatos.
+
+![Acción Buscar — evento narrativo del bioma](images/AccionDeBuscarCartaDeTesoro.png)
+
+*Resultado: evento narrativo del bioma. El mazo tiene 20 cartas barajadas al inicio de cada run; cada sala solo puede buscarse una vez.*
+
 ## Primeros pasos
 
 ### Requisitos
