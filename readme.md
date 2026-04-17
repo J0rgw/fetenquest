@@ -170,10 +170,12 @@ res://
 - Sistema de dados con probabilidades exactas por combinatoria
 - Permadeath, perdida escalonada de oro y fase de escape funcionando
 
-### Pendiente (Fase 2)
+### Implementado (Fase 2)
 - Escena visual con TileMap y sprites placeholder
 - Input del jugador (click para mover, click para atacar)
 - UI: barra de vida, contador de caos, panel de turno
 - Integracion de todos los sistemas en la escena de juego real
+
+### Pendiente (Fase 2)
 - 66 plantillas de sala manuales (22 por bioma)
 - Ciudad Hub con reclutamiento y tienda
