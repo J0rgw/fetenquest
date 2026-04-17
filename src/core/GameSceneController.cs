@@ -159,7 +159,10 @@ public partial class GameSceneController : Node
     private void OnCellRevealed(Vector2I pos)
     {
         EntityManager.OnCellRevealed(pos);
-        if (InputHandler.Instance.SelectedMercenary != null)
+        // No redibujar overlays por cada celda revelada — al abrir una sala
+        // o recorrer un pasillo esto dispara decenas de BFS+redraw por frame
+        // y la mazmorra se congela. El refresh final lo hace MoveMercenaryToAsync.
+        if (!InputHandler.Instance.InputBlocked && InputHandler.Instance.SelectedMercenary != null)
             InputHandler.RefreshOverlays();
     }
 

@@ -4,11 +4,16 @@ public partial class FogOfWarRenderer : Node2D
 {
     public static FogOfWarRenderer Instance { get; private set; }
 
-    [Export] public TileMapLayer FogLayer;
+    [Export] public NodePath FogLayerPath;
+    private TileMapLayer FogLayer;
 
     public override void _Ready()
     {
         Instance = this;
+        if (FogLayerPath != null && !FogLayerPath.IsEmpty)
+            FogLayer = GetNode<TileMapLayer>(FogLayerPath);
+        else
+            FogLayer = GetNodeOrNull<TileMapLayer>("FogLayer");
     }
 
     public void InitializeFog(int width, int height)

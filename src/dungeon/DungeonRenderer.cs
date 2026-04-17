@@ -7,7 +7,8 @@ public partial class DungeonRenderer : Node2D
 
     public const int TILE_SIZE = 32;
 
-    [Export] public TileMapLayer DungeonMap;
+    [Export] public NodePath DungeonMapPath;
+    private TileMapLayer DungeonMap;
 
     public int MapWidth { get; private set; }
     public int MapHeight { get; private set; }
@@ -20,6 +21,10 @@ public partial class DungeonRenderer : Node2D
     public override void _Ready()
     {
         Instance = this;
+        if (DungeonMapPath != null && !DungeonMapPath.IsEmpty)
+            DungeonMap = GetNode<TileMapLayer>(DungeonMapPath);
+        else
+            DungeonMap = GetNodeOrNull<TileMapLayer>("DungeonMap");
     }
 
     public void RenderDungeon(IReadOnlyList<DungeonRoom> rooms)

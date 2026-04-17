@@ -79,6 +79,40 @@ public partial class GridManager : Node
 
     public bool InBounds(Vector2I pos) => InBounds(pos.X, pos.Y);
 
+    // Flood-fill desde una celda de pasillo/puerta; devuelve todas las
+    // celdas conectadas del mismo pasillo (incluye puertas en ambos extremos).
+    public List<Vector2I> FloodCorridorFrom(Vector2I start)
+    {
+        var result = new List<Vector2I>();
+        var t0 = GetTile(start);
+        if (t0 != TileType.Corridor && t0 != TileType.Door &&
+            t0 != TileType.DoorLocked && t0 != TileType.DoorSealed)
+            return result;
+
+        var visited = new HashSet<Vector2I> { start };
+        var queue = new Queue<Vector2I>();
+        queue.Enqueue(start);
+
+        while (queue.Count > 0)
+        {
+            var cur = queue.Dequeue();
+            result.Add(cur);
+
+            foreach (var n in GetNeighbors(cur))
+            {
+                if (visited.Contains(n)) continue;
+                var t = GetTile(n);
+                if (t == TileType.Corridor || t == TileType.Door ||
+                    t == TileType.DoorLocked || t == TileType.DoorSealed)
+                {
+                    visited.Add(n);
+                    queue.Enqueue(n);
+                }
+            }
+        }
+        return result;
+    }
+
     // Vecinos ortogonales (4 direcciones)
     public List<Vector2I> GetNeighbors(Vector2I pos)
     {

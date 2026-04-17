@@ -49,6 +49,8 @@ public partial class FogOfWarSystem : Node
     public void RevealRoom(List<Vector2I> roomCells)
     {
         int revealed = 0;
+        var adjacentDoors = new HashSet<Vector2I>();
+
         foreach (var cell in roomCells)
         {
             if (_visibility.ContainsKey(cell) && _visibility[cell] == CellVisibility.Hidden)
@@ -57,7 +59,26 @@ public partial class FogOfWarSystem : Node
                 EmitSignal(SignalName.CellRevealed, cell);
                 revealed++;
             }
+
+            // Marcar puertas adyacentes para que el jugador vea la salida desde dentro.
+            foreach (var n in GridManager.Instance.GetNeighbors(cell))
+            {
+                var t = GridManager.Instance.GetTile(n);
+                if (t == TileType.Door || t == TileType.DoorLocked || t == TileType.DoorSealed)
+                    adjacentDoors.Add(n);
+            }
         }
+
+        foreach (var door in adjacentDoors)
+        {
+            if (_visibility.ContainsKey(door) && _visibility[door] == CellVisibility.Hidden)
+            {
+                _visibility[door] = CellVisibility.CorridorRevealed;
+                EmitSignal(SignalName.CellRevealed, door);
+                revealed++;
+            }
+        }
+
         if (revealed > 0)
             EmitSignal(SignalName.RoomRevealed);
         GD.Print($"Habitacion revelada: {revealed} celdas.");

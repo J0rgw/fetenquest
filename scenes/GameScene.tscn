@@ -49,7 +49,7 @@ script = ExtResource("8_gen")
 
 [node name="DungeonRenderer" type="Node2D" parent="World"]
 script = ExtResource("9_dren")
-DungeonMap = NodePath("DungeonMap")
+DungeonMapPath = NodePath("DungeonMap")
 
 [node name="DungeonMap" type="TileMapLayer" parent="World/DungeonRenderer"]
 
@@ -59,7 +59,7 @@ DungeonMap = NodePath("DungeonMap")
 
 [node name="FogRenderer" type="Node2D" parent="World"]
 script = ExtResource("10_fren")
-FogLayer = NodePath("FogLayer")
+FogLayerPath = NodePath("FogLayer")
 
 [node name="FogLayer" type="TileMapLayer" parent="World/FogRenderer"]
 z_index = 10
@@ -70,14 +70,14 @@ script = ExtResource("14_cam")
 
 [node name="EntityManager" type="Node" parent="."]
 script = ExtResource("11_emgr")
-EntitiesContainer = NodePath("../World/Entities")
+EntitiesContainerPath = NodePath("../World/Entities")
 
 [node name="MonsterAI" type="Node" parent="."]
 script = ExtResource("12_mai")
 
 [node name="InputHandler" type="Node" parent="."]
 script = ExtResource("13_input")
-OverlayContainer = NodePath("../World/OverlayContainer")
+OverlayContainerPath = NodePath("../World/OverlayContainer")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

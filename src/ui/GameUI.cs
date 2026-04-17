@@ -30,6 +30,10 @@ public partial class GameUI : Control
     private Panel _chaosNotifPanel;
     private Label _chaosNotifLabel;
 
+    private Panel _searchNotifPanel;
+    private Label _searchNotifTitle;
+    private Label _searchNotifBody;
+
     private Action<MercenaryInstance, MonsterInstance> _onAttackConfirm;
     private MercenaryInstance _combatAttacker;
     private MonsterInstance _combatDefender;
@@ -50,6 +54,7 @@ public partial class GameUI : Control
         BuildMercenaryPanel();
         BuildCombatPanel();
         BuildChaosNotif();
+        BuildSearchNotif();
     }
 
     public void Initialize()
@@ -94,6 +99,7 @@ public partial class GameUI : Control
         hbox.AddChild(_attackBtn);
 
         _searchBtn = new Button { Text = "Buscar", Disabled = true };
+        _searchBtn.Pressed += OnSearchPressed;
         hbox.AddChild(_searchBtn);
 
         _endTurnBtn = new Button { Text = "Terminar turno" };
@@ -348,6 +354,77 @@ public partial class GameUI : Control
         _chaosNotifPanel.AddChild(_chaosNotifLabel);
     }
 
+    private void BuildSearchNotif()
+    {
+        _searchNotifPanel = new Panel
+        {
+            Position = new Vector2(560, 200),
+            Size = new Vector2(800, 140),
+            Visible = false
+        };
+        var style = new StyleBoxFlat
+        {
+            BgColor = new Color(0.06f, 0.3f, 0.12f, 0.92f),
+            BorderColor = new Color(0.3f, 1f, 0.45f),
+            BorderWidthLeft = 4,
+            BorderWidthRight = 4,
+            BorderWidthTop = 4,
+            BorderWidthBottom = 4
+        };
+        _searchNotifPanel.AddThemeStyleboxOverride("panel", style);
+        AddChild(_searchNotifPanel);
+
+        _searchNotifTitle = new Label
+        {
+            Position = new Vector2(20, 18),
+            Size = new Vector2(760, 36),
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        _searchNotifTitle.AddThemeFontSizeOverride("font_size", 24);
+        _searchNotifTitle.AddThemeColorOverride("font_color", new Color(0.8f, 1f, 0.85f));
+        _searchNotifPanel.AddChild(_searchNotifTitle);
+
+        _searchNotifBody = new Label
+        {
+            Position = new Vector2(20, 62),
+            Size = new Vector2(760, 64),
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            AutowrapMode = TextServer.AutowrapMode.WordSmart
+        };
+        _searchNotifBody.AddThemeFontSizeOverride("font_size", 18);
+        _searchNotifBody.AddThemeColorOverride("font_color", Colors.White);
+        _searchNotifPanel.AddChild(_searchNotifBody);
+    }
+
+    public async void ShowSearchNotif(TreasureCard card)
+    {
+        string title = card.Type switch
+        {
+            TreasureCardType.Gold => $"+{card.GoldAmount} ORO",
+            TreasureCardType.Equipment => "EQUIPAMIENTO",
+            TreasureCardType.BodyPotion => "POCION DE CUERPO",
+            TreasureCardType.MindPotion => "POCION DE MENTE",
+            TreasureCardType.Trap => "TRAMPA",
+            TreasureCardType.WanderingMonster => "MONSTRUO ERRANTE",
+            TreasureCardType.NarrativeEvent => "EVENTO",
+            TreasureCardType.Nothing => "NADA",
+            _ => "TESORO"
+        };
+
+        _searchNotifTitle.Text = title;
+        _searchNotifBody.Text = card.Description;
+        _searchNotifPanel.Visible = true;
+        InputHandler.Instance.InputBlocked = true;
+
+        await ToSignal(GetTree().CreateTimer(2.0), "timeout");
+
+        _searchNotifPanel.Visible = false;
+        if (TurnManager.Instance.IsMercenaryPhase)
+            InputHandler.Instance.InputBlocked = false;
+    }
+
     public void OnTurnStarted(string entityName)
     {
         _turnLabel.Text = $"Turno: {entityName}";
@@ -517,5 +594,46 @@ public partial class GameUI : Control
         if (!TurnManager.Instance.IsMercenaryPhase) return;
         InputHandler.Instance.InputBlocked = true;
         TurnManager.Instance.EndCurrentMercenaryTurn();
+    }
+
+    private void OnSearchPressed()
+    {
+        if (!TurnManager.Instance.IsMercenaryPhase) return;
+
+        var merc = TurnManager.Instance.GetCurrentMercenary();
+        if (merc == null || !merc.IsAlive || merc.HasSearchedThisTurn) return;
+
+        var room = DungeonRenderer.Instance.GetRoomAt(merc.GridPosition);
+        if (room == null)
+        {
+            AddCombatLog($"{merc.EntityName} solo puede buscar dentro de una sala.", new Color(0.9f, 0.7f, 0.3f));
+            return;
+        }
+
+        // Solo salas despejadas (ningun monstruo vivo dentro) permiten buscar.
+        foreach (var mon in room.Monsters)
+        {
+            if (mon.IsAlive)
+            {
+                AddCombatLog("No se puede buscar con monstruos vivos en la sala.", new Color(0.9f, 0.7f, 0.3f));
+                return;
+            }
+        }
+
+        merc.RegisterSearch();
+        var card = TreasureSystem.Instance.DrawCard(merc.GridPosition);
+
+        Color logColor = card.Type switch
+        {
+            TreasureCardType.Gold => new Color(1f, 0.85f, 0.2f),
+            TreasureCardType.Trap => new Color(1f, 0.3f, 0.3f),
+            TreasureCardType.WanderingMonster => new Color(1f, 0.6f, 0.2f),
+            _ => Colors.White,
+        };
+        AddCombatLog($"{merc.EntityName} busca en la sala: {card.Description}", logColor);
+
+        ShowSearchNotif(card);
+        UpdateActionButtons(merc);
+        InputHandler.Instance.RefreshOverlays();
     }
 }

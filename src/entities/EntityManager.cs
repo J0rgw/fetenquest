@@ -5,13 +5,16 @@ public partial class EntityManager : Node
 {
     public static EntityManager Instance { get; private set; }
 
-    [Export] public Node2D EntitiesContainer;
+    [Export] public NodePath EntitiesContainerPath;
+    private Node2D EntitiesContainer;
 
     private Dictionary<Entity, EntityVisual> _visuals = new();
 
     public override void _Ready()
     {
         Instance = this;
+        if (EntitiesContainerPath != null && !EntitiesContainerPath.IsEmpty)
+            EntitiesContainer = GetNode<Node2D>(EntitiesContainerPath);
     }
 
     public EntityVisual SpawnMercenary(MercenaryInstance m, Vector2I gridPos)

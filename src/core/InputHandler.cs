@@ -6,7 +6,8 @@ public partial class InputHandler : Node
 {
     public static InputHandler Instance { get; private set; }
 
-    [Export] public Node2D OverlayContainer;
+    [Export] public NodePath OverlayContainerPath;
+    private Node2D OverlayContainer;
 
     public MercenaryInstance SelectedMercenary { get; private set; }
     public bool InputBlocked { get; set; } = false;
@@ -19,6 +20,8 @@ public partial class InputHandler : Node
     public override void _Ready()
     {
         Instance = this;
+        if (OverlayContainerPath != null && !OverlayContainerPath.IsEmpty)
+            OverlayContainer = GetNode<Node2D>(OverlayContainerPath);
     }
 
     public void OnMercenaryTurnStarted(MercenaryInstance merc)
@@ -186,6 +189,11 @@ public partial class InputHandler : Node
                 room.IsRevealed = true;
             }
         }
+
+        // Revelar todo el pasillo al que pertenece esta puerta de una vez.
+        var corridorCells = GridManager.Instance.FloodCorridorFrom(doorPos);
+        foreach (var c in corridorCells)
+            FogOfWarSystem.Instance.RevealCorridorCell(c);
     }
 
     private void OnAttackConfirmed(MercenaryInstance att, MonsterInstance def)
